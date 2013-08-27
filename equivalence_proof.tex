@@ -1,0 +1,107 @@
+\documentclass[11pt]{article}
+
+% declare all packages here
+\usepackage[latin1]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\usepackage{verbatim}
+
+\begin{document}
+
+
+\title{A Equivalence Proof between the De-randomized Polya Board and the De-randomized Percolation Model}
+
+\author{Jim Propp \and David Einstein \and Erin Graceffa \and Kathy Antosca \and David Campbell \and James DeFilippo \\ \\ University of Massachusetts at Lowell}
+%\institute{\inst University}
+\date{8.16.2013}
+\maketitle
+\abstract{Our discussion proceeds by describing random models and developing derandomized versions of these models. The first random model, the Polya Urn, can be transformed into the randomized Polya board. Then, using rotor-routers and a set of rules for particle movement, we can derive the derandomized Polya board.
+}
+
+
+\section{The Polya Urn Model}
+The Polya Urn model starts with one black ball and one white ball. One ball is selected at random. If a white ball is selected, then two white ball are put back in the urn, and if a black ball is selected, then two black balls are put back in the urn. This process can be repeated for any number of interations each time adding a ball with the same color as the ball drawn.
+
+\section{The Randomized Polya Board}
+When we make a tree diagram of the Polya urn model we get the randomized Polya board. Each edge in the tree diagram represents the probability that a white or black ball will be selected. Each node represents a possible outcome after a ball is selected. To find the probability of arriving at a particular node, we determine all the different paths that can be taken to a particular node, multiply the probabilities along each path, and add the results for all the different paths. \newline
+
+% Set the overall layout of the tree
+\tikzstyle{level 1}=[level distance=3.5cm, sibling distance=3.5cm]
+\tikzstyle{level 2}=[level distance=3.5cm, sibling distance=2cm]
+
+% Define styles for bags and leafs
+\tikzstyle{bag} = [text width=4em, text centered]
+\tikzstyle{end} = [circle, minimum width=3pt,fill, inner sep=0pt]
+
+\begin{tikzpicture}[grow=right, sloped]
+\node[bag] {$o$}
+    child {
+        node[bag] {$o$}        
+            child {
+                node[end, label=right:
+                    {$P(B)\cap P(A|B)=\frac{1}{2}\cdot\frac{1}{3}$}] {}
+                edge from parent
+                node[above] {$P(A|B)$}
+                node[below]  {$\frac{1}{3}$}
+            }
+            child {
+                node[end, label=right:
+                    {$P(B)\cap P(B|B)=\frac{1}{2}\cdot\frac{2}{3}$}] {}
+                edge from parent
+                node[above] {$P(B|B)$}
+                node[below]  {$\frac{2}{3}$}
+            }
+            edge from parent 
+            node[above] {$P(B)$}
+            node[below]  {$\frac{1}{2}$}
+    }
+    child {
+        node[bag] {$o$}        
+        child {
+                node[end, label=right:
+                    {$P(A)\cap P(B|A)=\frac{1}{2}\cdot\frac{1}{3}$}] {}
+                edge from parent
+                node[above] {$P(B|A)$}
+                node[below]  {$\frac{1}{3}$}
+            }
+            child {
+                node[end, label=right:
+                    {$P(A)\cap P(A|A)=\frac{1}{2}\cdot\frac{2}{3}$}] {}
+                edge from parent
+                node[above] {$P(A|A)$}
+                node[below]  {$\frac{2}{3}$}
+            }
+        edge from parent         
+            node[above] {$P(A)$}
+            node[below]  {$\frac{1}{2}$}
+    };
+\end{tikzpicture}
+
+Using this tree diagram we can think of particles passing through the system and the nodes that they arrive at as the result of n drawings form the urn. After a large number of particles go through the system we expect that roughly half of the particles to go left and right. Furthermore, after a large number of particles have gone through the system, we expect the number of particles that pass through a particular node to be the number of particles times the probability of arriving at that node. This leads us to the de-randomized Polya board. 
+
+\section{The De-randomized Polya Board}
+The derandomized Polya board consists of a set of nodes, a set of movement rules, a bijective function between the set of movement rules and the set of nodes, and an onto function from the set of nodes to the set of node pairs. The derandomized model consists of a triangular arrangement of nodes.
+ 
+\begin{center}
+\begin{tabular}{ l c c c c c c c c c r }
+  \  & \  & \  & \  & \  & 0,0 & \  & \  & \  & \  & \  \\
+  \  & \  & \  & \  & 1,0 & \  & 1,1 & \  & \  & \  & \  \\
+  \  & \  & \  & 2,0 & \  & 2,1 & \  & 2,2 & \  & \  \\
+  \  & \  & 3,0 & \  & 3,1 & \  & 3,2 & \  & 3,3 & \  & \  \\
+  \  & 4,0 & \  & 4,1 & \  & 4,2 & \  & 4,3 & \  & 4,4 & \  \\
+  5,0 & \  & 5,1 & \  & 5,2 & \  & 5,3 & \  & 5,4 & \  & 5,5 \\
+\end{tabular}
+\end{center}
+
+The level of a particle corresponds to the first element of the position tuple. So if the particle is at $(m,n)$, then the particle is at level $m$. By a result established by Ander and Einstein, if a particle exists at the $m$th level at stage $l$, then the particle exists at the $m+1$th level at stage $l+1$. 
+
+During a stage transition, a particle moves from the node at stage m to a node given by the transition function of the node at stage m.
+Referencing the above diagram, if a particle is at node $(3,1)$ at stage $l$, then the particle will be at $(4,1)$ or $(4,2)$ in the $l+1$th stage.
+Particles travel from the top vertex to the other nodes of the triangle. During a stage transition, we know that the particle will travel from the nth level to the $l+1$th level. This leaves open the question of whether the particle will descend to the left or the right. Each node has a movement left-right rule associated with it. The node at the position m, n will have $L^mR^n$. That is, $m$ (modulo  $m+n$) particles will go to the left followed by $n$ (modulo  $m+n$) particles going to the right. 
+
+
+
+
+
+
+\end{document}
