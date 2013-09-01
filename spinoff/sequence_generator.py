@@ -1,3 +1,10 @@
+# sequence_generator.py 
+# by James DeFilippo
+# Generates sequences which satisfy the following three properties: 
+# 1. for every two numbers i, there must be a single number i+1 between them
+# 2. for every two numbers i+1, there must be a single number i between them
+# 3. the number i must occur before the number i+1
+
 class Node(object): 
     def __init__(self, data): 
         self.data = data
@@ -37,33 +44,26 @@ class Node(object):
             for c in self.children: 
                 c.populate_nodes_tolevel(c.data, level - 1)
  
-    
+# This function only works for sequences of length < 20   
 def check_sequence(sequence): 
-    # REDUCE THIS BY ZERO!
     count_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    #print sequence
     for c in sequence:
-        #print c 
         count_list[c] = count_list[c] + 1 
-        if ((c == 1) and ((count_list[1] == count_list[2]) or (count_list[1] == count_list[2] + 1))):
-            #print "case c=1"
+        if ((c == 1) and ((count_list[c] == count_list[c+1]) or (count_list[c] == count_list[c+1] + 1))):
             pass 
-        elif ((c == 19) and ((count_list[19] == count_list[18]) or (count_list[19] == count_list[18] - 1))):
-            #print "case c=9"
+        elif ((c == 19) and ((count_list[c] == count_list[c-1]) or (count_list[c] == count_list[c-1] - 1))):
             pass
         elif (((count_list[c] == count_list[c+1]) or (count_list[c] == count_list[c+1] + 1)) and ((count_list[c] == count_list[c-1]) or (count_list[c] == count_list[c-1] - 1))):
-            #print "case c between 2 and 8"
             pass
         else: 
             return False 
     return True
      
-
+# Using sequences of length n, this function creates potential sequences of length n+1 and runs them against the check_sequence method
 def generate_sequence(initial_sequence): 
         new_sequences = []
         temp = []
-        #for i in range(1,10): 
-        for i in range(1,15):
+        for i in range(1,20):
             temp = initial_sequence[:]
             temp.append(i)
             if (check_sequence(temp) == True):
@@ -71,6 +71,7 @@ def generate_sequence(initial_sequence):
             del temp[:] 
         return new_sequences 
 
+# Change value of test_sequences to try out your choice of sequence.
 def test(): 
     test_sequences = [ [1,2,1,2,6] ] 
     for item in test_sequences: 
@@ -78,18 +79,11 @@ def test():
         print check_sequence(item)
 
 def main():    
-    # Allow user to input from the keyboard the initial_sequence and the level     
-    #initial_sequence = []
-    #initial_sequence = input("Please enter a valid initial sequence. Use the format [x,y,z], where x,y,z are integers.")
-    #level = input("Please enter the level you want")
+    max_length = input("Please enter the maximum length of the sequences you wish to generate: ")
+    level = max_length - 1
     initial_sequence = [1]
-    level = 10
     n = Node(initial_sequence)
     n.populate_nodes_tolevel(initial_sequence, level)
     n.print_nodes_atlevel(level)
-
-
-#    test_sequence = [1, 1]
-#    print check_sequence(test_sequence)
 
 main()
